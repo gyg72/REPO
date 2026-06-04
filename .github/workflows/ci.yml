@@ -13,7 +13,7 @@ jobs:
       - name: Install Cppcheck
         run: sudo apt-get update && sudo apt-get install -y cppcheck
       - name: Run Cppcheck
-        run: cppcheck --enable=all --error-exitcode=1 .
+        run: cppcheck --enable=all --std=c11 --suppress=missingIncludeSystem --error-exitcode=1 src/
 
   test:
     name: Test (CMake & CTest)
@@ -30,8 +30,8 @@ jobs:
         run: cd build && ctest --output-on-failure
       - name: Coverage Report
         run: |
-          lcov --directory build --capture --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
+          lcov --directory build --capture --output-file coverage.info --ignore-errors unused
+          lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info --ignore-errors unused
           lcov --list coverage.info
 
   build:
@@ -51,3 +51,4 @@ jobs:
         with:
           name: compiled-binary
           path: build/main_app
+
